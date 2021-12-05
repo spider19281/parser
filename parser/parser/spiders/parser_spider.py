@@ -1,18 +1,18 @@
 from __future__ import absolute_import
+import os
 
-
+import requests
+from twisted.internet import reactor, defer
 import scrapy
-from scrapy.crawler import CrawlerProcess
+from scrapy.crawler import CrawlerRunner
 from scrapy.utils.project import get_project_settings
+from scrapy.utils.log import configure_logging
+import logging
 
 from ..items import ParserItem
 
 
-
-from aiogram import Bot, Dispatcher, executor, types
-
-bot = Bot(token="2045834896:AAFJ_d3GVABZNd9fhFh652m0bAeFhKM3ZIE")
-dp = Dispatcher(bot)
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 class ParserSpider(scrapy.Spider):
     name = "ParserSpider"
@@ -36,23 +36,17 @@ class ParserSpider(scrapy.Spider):
                 yield scrapy.Request(url=response.url.replace('news', title_url), callback=self.parse_post)
 
     def parse_post(self, response):
+        print(os.path)
         title = response.css('h1::text').get()
-        item1 = ParserItem()
-        item1['title'] = title
-        yield item1
-        '''download_url = response.css('.sl-item-video').css('iframe::attr(src)').get()
-        file = requests.get(download_url)
-        f = open('test', 'wb')
-        f.write(file)'''
+        item = ParserItem()
+        item['title'] = title
+        embed = response.css('.sl-item-video').css('iframe::attr(src)').get()
+        url = embed.split('?')[0].replace('embed', 'video')
+        fname =  url.rsplit('/')[-1] 
+        item['file'] = fname
+        f = open('..//..//files//' + fname + ".mp4", 'wb')
+        f.write(requests.get(url).content)
+        f.close()
+        yield item
 
-    def download_video(self, response):
-        return response.body
 
-@dp.message_handler(commands="/start")
-async def cmd_test1(message: types.Message):
-    process = CrawlerProcess()
-    process.crawl(ParserSpider(chat_id=message.chat))
-    process.start()
-
-if __name__ == "__main__":
-    executor.start_polling(dp, skip_updates=True)

@@ -5,13 +5,22 @@
 
 
 # useful for handling different item types with a single interface
+
+from ..parser.bot import bot
 from itemadapter import ItemAdapter
 import requests
 
-API_KEY_TOKEN = "2045834896:AAFJ_d3GVABZNd9fhFh652m0bAeFhKM3ZIE"
+API_KEY_TOKEN = bot._token
 
 class ParserPipeline:
-    def process_item(self, item, spider):
-        res = requests.post("https://api.telegram.org/bot" + API_KEY_TOKEN + "/sendMessage",
-                            {"text": item["text"], "chat_id": spider.chat_id, "parse_mode": "html"})
+    async def process_item(self, item, spider):
+        if spider.chat_id:
+            res = requests.post("https://api.telegram.org/bot" + API_KEY_TOKEN + "/sendMessage",
+                                {"text": item["title"], "chat_id": spider.chat_id, "parse_mode": "html"})
+
+            '''res = requests.post("https://api.telegram.org/bot" + API_KEY_TOKEN + "/sendDocument",
+                                {"document": "./files/" + item["file"] + ".mp4", "chat_id": spider.chat_id})'''
+            with open('C:\\Users\\efimov-sv\\parser\\parser\\files\\' + item['file'] + '.mp4', 'rb') as video:
+                await bot.answer_video(video)
+            #bot.send_video()
         return item
