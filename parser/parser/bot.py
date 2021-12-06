@@ -13,6 +13,7 @@ dp = Dispatcher(bot)
 
 COMMAND_TIME = 0
 
+
 class Scraper:
     def __init__(self):
         settings_file_path = 'parser.parser.settings' # The path seen from root, ie. from main.py
