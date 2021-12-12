@@ -6,21 +6,53 @@
 
 # useful for handling different item types with a single interface
 
-from ..parser.bot import bot
+import aiogram
+from ..parser.bot import bot, Dispatcher
 from itemadapter import ItemAdapter
 import requests
+import functools
+import json
+import os
+import sqlite3
 
 API_KEY_TOKEN = bot._token
 
-class ParserPipeline:
-    async def process_item(self, item, spider):
-        if spider.chat_id:
-            res = requests.post("https://api.telegram.org/bot" + API_KEY_TOKEN + "/sendMessage",
-                                {"text": item["title"], "chat_id": spider.chat_id, "parse_mode": "html"})
 
-            '''res = requests.post("https://api.telegram.org/bot" + API_KEY_TOKEN + "/sendDocument",
-                                {"document": "./files/" + item["file"] + ".mp4", "chat_id": spider.chat_id})'''
-            with open('C:\\Users\\efimov-sv\\parser\\parser\\files\\' + item['file'] + '.mp4', 'rb') as video:
-                await bot.answer_video(video)
-            #bot.send_video()
+
+
+class ParserPipeline(object):
+    def __init__(self):
+        self.connection = sqlite3.connect('./database.db')
+        self.cursor = self.connection.cursor()
+
+    def send_message(spider, item, method):
+        pass
+
+    def insert_item(self, item):
+            self.cursor.execute(
+                "insert into posts (title, file, link) values (?, ?, ?)",
+                    (item['title'], item['file'], item['link']))
+            self.connection.commit()
+            self.connection.close()
+
+    def process_item(self, item, spider):
+        if spider.chat_id:
+            link = item['link']
+            title = item['title']
+            file = item['file']
+            #self.insert_item(item)
+            data_video = {'chat_id': str(spider.chat_id), 'caption': f'<a href="{link}">{title}</a>', 'parse_mode': 'html'}
+            data_text = {'chat_id': str(spider.chat_id), 'text': f'<a href="{link}">{title}</a>', 'parse_mode': 'html'}
+            if (item['size'] < 52428800):
+                fvideo = open(file + '.mp4', 'rb')
+                video = {'video': fvideo}
+                res = requests.post("https://api.telegram.org/bot" + API_KEY_TOKEN + "/sendVideo",
+                data=data_video, files=video)
+                fvideo.close()
+                os.remove(file + '.mp4')
+            else:
+                res = requests.post("https://api.telegram.org/bot" + API_KEY_TOKEN + "/sendMessage",
+                data=data_text)
+            print(res)
         return item
+

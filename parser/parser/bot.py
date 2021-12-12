@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os 
 from twisted.internet import reactor, defer
 from multiprocessing import Process
@@ -6,6 +7,10 @@ from scrapy.utils.project import get_project_settings
 from scrapy.utils.log import configure_logging
 from parser.parser.spiders.parser_spider import ParserSpider
 from aiogram import Bot, Dispatcher, executor, types
+import requests
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 
 bot = Bot(token="2045834896:AAFJ_d3GVABZNd9fhFh652m0bAeFhKM3ZIE")
@@ -26,11 +31,6 @@ class Scraper:
         self.process = CrawlerProcess(get_project_settings())
         p = self.process.crawl(ParserSpider, chat_id=chat_id)
         reactor.run()
-
-'''@dp.message_handler(content_types=["text"])
-async def cmd_image(message: types.Message):
-    with open('C:\\Users\\efimov-sv\\parser\\parser\\files\\2281719.mp4', 'rb') as video:
-        await message.answer_video(video)   '''
 
 
 @dp.message_handler(commands="parse")
