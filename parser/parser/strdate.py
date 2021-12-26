@@ -15,6 +15,6 @@ class CustomDate():
         else:
             split_str = str_date.split(' ')
             self.year = date.today().year
-            self.month = CustomDate.month_list.index(split_str[1].lower())
+            self.month = CustomDate.month_list.index(split_str[1].lower()) + 1
             self.day = int(split_str[0])
         return date(self.year, self.month, self.day)
