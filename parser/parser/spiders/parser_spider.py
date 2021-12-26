@@ -14,11 +14,10 @@ from parser.parser.strdate import CustomDate
 from parser.parser.items import ParserItem
 from parser.parser.database import Database
 from parser.parser.parsebot import ParseBot
-from functools import partial
-import re
+
 
 # Parse Depth in days
-PARSE_DEPTH = 4
+PARSE_DEPTH = 2
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 
@@ -52,7 +51,7 @@ class ParserSpider(scrapy.Spider):
         urls = [
             f'https://0{x}.xn--b1aew.xn--p1ai/news' if x < 10 
             else
-            f'https://{x}.xn--b1aew.xn--p1ai/news' for x in range(1, 2)
+            f'https://{x}.xn--b1aew.xn--p1ai/news' for x in range(1, 100)
         ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)

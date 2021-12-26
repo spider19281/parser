@@ -2,15 +2,17 @@ import asyncio
 from aiogram import Bot, Dispatcher
 
 
+
 class ParseBot:
     token = "2045834896:AAHdxAfzv01yNMzebHa1nQa7RCXB99iGzew"
     bot = Bot(token=token)
     dp = Dispatcher(bot)
+    loop = asyncio.get_event_loop()
 
     @classmethod
     def send_message(cls, *args, **kwargs):
-        asyncio.run(cls.bot.send_message(*args, **kwargs), )
+        cls.loop.run_until_complete(cls.bot.send_message(*args, **kwargs), )
 
     @classmethod
     def send_video(cls, *args, **kwargs):
-        asyncio.run(cls.bot.send_video(*args, **kwargs))
+        cls.loop.run_until_complete(cls.bot.send_video(*args, **kwargs))
