@@ -8,7 +8,6 @@ from scrapy.utils.log import configure_logging
 from parser.parser.spiders.parser_spider import ParserSpider
 from parser.parser.parsebot import ParseBot
 from aiogram import types, executor
-from aiogram.types import InputFile, InputMediaVideo
 import logging
 
 logging.basicConfig(level=logging.INFO)
