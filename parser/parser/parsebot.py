@@ -1,10 +1,11 @@
+import os
 import asyncio
 from aiogram import Bot, Dispatcher
 
 
 
 class ParseBot:
-    token = "2045834896:AAHdxAfzv01yNMzebHa1nQa7RCXB99iGzew"
+    token = os.environ['TOKEN']
     bot = Bot(token=token)
     dp = Dispatcher(bot)
     loop = asyncio.get_event_loop()

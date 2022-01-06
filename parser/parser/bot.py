@@ -1,8 +1,7 @@
-from __future__ import absolute_import
 import os 
-from twisted.internet import reactor, defer
+from twisted.internet import reactor
 from multiprocessing import Process
-from scrapy.crawler import CrawlerRunner, CrawlerProcess
+from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from scrapy.utils.log import configure_logging
 from parser.parser.spiders.parser_spider import ParserSpider
@@ -11,7 +10,6 @@ from aiogram import types, executor
 import logging
 
 logging.basicConfig(level=logging.INFO)
-
 
 
 class ParseBotWithHandlers(ParseBot):
@@ -37,7 +35,9 @@ class Scraper:
         reactor.run()
 
 
-
-if __name__ == "__main__":
+def main():
     bot = ParseBotWithHandlers()
     executor.start_polling(bot.dp)
+
+if __name__ == "__main__":
+    main()
